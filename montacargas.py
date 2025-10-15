@@ -64,16 +64,28 @@ class Montacargas:
                 max_y = max(max_y, top)
             
             # Calcular ancho total con margen
-            margen = 0.8  # Margen adicional alrededor de las cajas
+            # Usamos un margen proporcional al tamaño de la caja más grande
+            margen_base = 0.8
+            dim_max = max(self._dimensiones_caja[0], self._dimensiones_caja[1])
+            margen = margen_base * dim_max  # Margen proporcional al tamaño de la caja
+            
+            # Calcular los anchos finales, considerando posibles diferencias de tamaño
             ancho_max_x = max_x - min_x + margen * 2
             ancho_max_y = max_y - min_y + margen * 2
+            
+
         else:
             # Si no hay cajas, usar cálculo aproximado pero permitiendo diferentes proporciones
-            margen = 0.5  # Margen adicional alrededor de las cajas
             dim_x = self._dimensiones_caja[0]
             dim_y = self._dimensiones_caja[1]
-            ancho_max_x = self._lado_cuadricula * self._espaciado * dim_x + margen
-            ancho_max_y = self._lado_cuadricula * self._espaciado * dim_y + margen
+            dim_max = max(dim_x, dim_y)
+            margen = 0.5 * dim_max  # Margen proporcional al tamaño de la caja
+            
+            # Calcular el tamaño total necesario, considerando las proporciones
+            ancho_max_x = self._lado_cuadricula * self._espaciado * dim_x + margen * 2
+            ancho_max_y = self._lado_cuadricula * self._espaciado * dim_y + margen * 2
+            
+
         
         # Calcular las dimensiones del plano (puede ser rectangular)
         mitad_ancho_x = ancho_max_x / 2
@@ -128,6 +140,7 @@ class Montacargas:
             ancho_caja_y = self._dimensiones_caja[1]
             
             # Calcular el espaciado efectivo (proporción del tamaño de la caja)
+            # Ajustamos el espaciado para tener en cuenta las dimensiones de las cajas
             espaciado_efectivo_x = ancho_caja_x * self._espaciado
             espaciado_efectivo_y = ancho_caja_y * self._espaciado
             
@@ -136,6 +149,7 @@ class Montacargas:
             offset_y = (self._lado_cuadricula - 1) * espaciado_efectivo_y / 2
             
             # Posicionar la caja considerando su tamaño
+            # Ajuste para garantizar el posicionamiento correcto en ambas direcciones X e Y
             pos_x = columna * espaciado_efectivo_x - offset_x
             pos_y = fila * espaciado_efectivo_y - offset_y
             pos_z = self._dimensiones_caja[2] / 2  # La mitad de la altura para que se apoye en el plano
